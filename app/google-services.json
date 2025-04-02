@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "472712952382",
-    "project_id": "quickchat-4bbee",
-    "storage_bucket": "quickchat-4bbee.firebasestorage.app"
+    "project_number": "218678111788",
+    "project_id": "quickchat-afc86",
+    "storage_bucket": "quickchat-afc86.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:472712952382:android:5a1c5054a49f2b1260ef6f",
+        "mobilesdk_app_id": "1:218678111788:android:13a34f8c3eecfb03cfeb89",
         "android_client_info": {
           "package_name": "com.example.quickchat"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "218678111788-cfgnj3j5bnq23rbtcvhdso6p0ur6ba0u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quickchat",
+            "certificate_hash": "281279f452a4c07ef04fc2e365d4a5cef0657f6b"
+          }
+        },
+        {
+          "client_id": "218678111788-hmij8r6qbrjcmk70uo9i7gsroroa4nfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyD1eYXMbzk8s4y3nh2j6tcxAjJAwx7bcvA"
+          "current_key": "AIzaSyB2Mv1SpMLqTaX9_dbaLT4ajUOPKg7_YvE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "218678111788-hmij8r6qbrjcmk70uo9i7gsroroa4nfo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
