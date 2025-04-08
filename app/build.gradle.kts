@@ -62,6 +62,8 @@ dependencies {
     //Koin use for DI
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
+    implementation(libs.koin.androidx.compose)
+
 
     //Firebase
 //    implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
@@ -79,4 +81,8 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
     implementation(libs.gson)
+
+    //navigation manage
+    implementation(libs.androidx.navigation.compose)
+
 }

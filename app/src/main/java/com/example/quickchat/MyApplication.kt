@@ -1,19 +1,19 @@
 package com.example.quickchat
 
 import android.app.Application
+import com.example.quickchat.di.networkModule
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthOptions
-import java.util.concurrent.TimeUnit
+import org.koin.core.context.startKoin
 
 class MyApplication : Application() {
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
     override fun onCreate() {
         super.onCreate()
+        FirebaseApp.initializeApp(this)
+        startKoin {
+            modules(networkModule)
+        }
     }
-
-
-
 
 }
