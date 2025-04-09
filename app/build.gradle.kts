@@ -85,4 +85,8 @@ dependencies {
     //navigation manage
     implementation(libs.androidx.navigation.compose)
 
+    implementation(libs.paging)
+    implementation(libs.paging.compose)
+
+
 }

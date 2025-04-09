@@ -40,7 +40,7 @@ fun SplashScreen(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Spash")
+            Text(text = "Spash screen")
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

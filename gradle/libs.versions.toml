@@ -44,6 +44,8 @@ firebase-auth = { module = "com.google.firebase:firebase-auth-ktx", version.ref 
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebase-firestore-version" }
 firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebase-storage-version" }
 play-services-auth = "com.google.android.gms:play-services-auth:20.7.0"
+paging = "androidx.paging:paging-runtime:3.2.1"
+paging-compose = "androidx.paging:paging-compose:3.2.1"
 
 
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
