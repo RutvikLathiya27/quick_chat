@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
+    id("kotlin-parcelize")
 
 }
 
@@ -88,5 +89,8 @@ dependencies {
     implementation(libs.paging)
     implementation(libs.paging.compose)
 
+    implementation(libs.androidx.ui.text.google.fonts)
+
+    implementation(libs.lottie.compose )
 
 }

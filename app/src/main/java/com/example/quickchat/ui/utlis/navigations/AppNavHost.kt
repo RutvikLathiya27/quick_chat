@@ -1,11 +1,16 @@
 package com.example.quickchat.ui.utlis.navigations
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.quickchat.data.models.UserModel
 import com.example.quickchat.ui.screens.AuthenticationScreen.AuthenticationScreen
+import com.example.quickchat.ui.screens.ChatScreen.ChatScreen
 import com.example.quickchat.ui.screens.HomeScreen.HomeScreen
 import com.example.quickchat.ui.screens.SearchUserScreen.SearchUserScreen
 import com.example.quickchat.ui.screens.SplashScreen.SplashScreen
@@ -53,8 +58,38 @@ fun AppNavHost(
         }
 
         composable(Screen.Search.route){
-            SearchUserScreen()
+            SearchUserScreen(
+                onNavigationToChat = { selectedUserId ->
+                    navController.navigate(Screen.Chat.createRoute(selectedUserId)){
+                        popUpTo(Screen.Search.route){inclusive = true}
+                    }
+                },
+            )
         }
+
+        composable(
+            route = Screen.Chat.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+
+            ChatScreen(
+                user = userId,
+            )
+        }
+
     }
 
+}
+
+class UserModelNavType : NavType<UserModel>(isNullableAllowed = false) {
+    override fun get(bundle: Bundle, key: String): UserModel? {
+        return bundle.getParcelable(key)
+    }
+    override fun put(bundle: Bundle, key: String, value: UserModel) {
+        bundle.putParcelable(key, value)
+    }
+    override fun parseValue(value: String): UserModel {
+        throw UnsupportedOperationException("Parcelable can't be parsed from String!")
+    }
 }

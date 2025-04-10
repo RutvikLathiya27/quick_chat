@@ -1,7 +1,10 @@
 package com.example.quickchat.data.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class UserModel(
     @SerializedName(value = "uid")
     val uId : String = "",
@@ -11,4 +14,4 @@ data class UserModel(
     val name : String = "",
     @SerializedName(value = "profile")
     val profile : String = ""
-)
+) : Parcelable
