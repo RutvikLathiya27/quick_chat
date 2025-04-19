@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import com.example.quickchat.R
 import com.example.quickchat.ui.screens.SplashScreen.models.SignInState
 import com.example.quickchat.ui.theme.colorPrimary
 import com.example.quickchat.ui.theme.colorWhite
+import com.example.quickchat.ui.utlis.errorLog
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -27,11 +29,17 @@ fun SplashScreen(
     viewModel: SplashViewModel = koinViewModel(),
 ) {
 
-    val status = viewModel.isSIgnInState.collectAsState().value
-    when (status) {
-        is SignInState.Loading -> {}
-        is SignInState.SignIn -> onNavigationToHome()
-        is SignInState.SignOut -> onNavigationToAuthentication()
+    val status = viewModel.isSIgnInState.collectAsState()
+
+    LaunchedEffect(status) {
+        when (status.value) {
+            is SignInState.Loading -> {
+            }
+            is SignInState.SignIn -> {
+                onNavigationToHome()
+            }
+            is SignInState.SignOut -> onNavigationToAuthentication()
+        }
     }
 
     Scaffold(

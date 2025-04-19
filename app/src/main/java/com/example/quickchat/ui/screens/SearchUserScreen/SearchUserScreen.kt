@@ -1,13 +1,16 @@
 package com.example.quickchat.ui.screens.SearchUserScreen
 
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
@@ -51,6 +56,7 @@ import com.example.quickchat.ui.theme.colorGreenShade3
 import com.example.quickchat.ui.theme.colorLightGray
 import com.example.quickchat.ui.theme.colorPrimary
 import com.example.quickchat.ui.theme.colorWhite
+import com.example.quickchat.ui.utlis.commonCompose.CircularImageFromUrl
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -201,10 +207,10 @@ fun createSearchUserList(searchUser: List<UserModel>, onNavigationToChat: (Strin
             LottieAnimation(
                 composition = composition,
                 iterations = LottieConstants.IterateForever,
-                modifier = Modifier.size(150.dp)
+                modifier = Modifier
+                    .size(150.dp)
                     .align(Alignment.Center)
             )
-            Text("no user found", modifier = Modifier.align(Alignment.Center))
         }
     } else {
         LazyColumn(
@@ -213,6 +219,16 @@ fun createSearchUserList(searchUser: List<UserModel>, onNavigationToChat: (Strin
         ) {
             items(searchUser.size) { itemCount ->
                 UserItem(searchUser[itemCount], onNavigationToChat)
+                if (itemCount != searchUser.size - 1) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(0.7.dp)
+                            .background(
+                                color = colorGreenShade3
+                            )
+                    )
+                }
             }
         }
     }
@@ -220,22 +236,26 @@ fun createSearchUserList(searchUser: List<UserModel>, onNavigationToChat: (Strin
 
 @Composable
 fun UserItem(user: UserModel?, onNavigationToChat: (String) -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable {
-                onNavigationToChat(user?.name ?: "fail")
-            },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 12.dp, vertical = 10.dp)
+        .clickable {
+            onNavigationToChat(user?.uid ?: "fail")
+        }) {
+        CircularImageFromUrl(user?.profile ?: "", 45.dp)
+        Column(
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .align(Alignment.CenterVertically)
+        ) {
             Text(
                 text = user?.name ?: "Unnamed User",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = colorWhite
             )
-            Text(text = user?.email ?: "", fontSize = 14.sp, color = Color.Gray)
         }
     }
+
 }

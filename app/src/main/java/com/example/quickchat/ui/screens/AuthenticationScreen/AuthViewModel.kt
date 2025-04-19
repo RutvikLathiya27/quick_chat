@@ -78,7 +78,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
     private suspend fun createAuthUserOnDatabase(uId : String){
         val userData = UserModel(
-            uId = uId,
+            uid = uId,
             email = "",
             name = "",
             profile = ""

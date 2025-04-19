@@ -38,7 +38,7 @@ class UserRepositoryImpl(
 
             val filtered = snapshot.documents.mapNotNull {
                 it.toObject(UserModel::class.java)
-            }.filter { it.uId != userId }
+            }.filter { it.uid != userId }
 
             emit(SearchUserState.SearchSuccess(filtered))
 

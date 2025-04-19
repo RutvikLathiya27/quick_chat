@@ -54,6 +54,11 @@ fun AppNavHost(
                 onNavigationToSearch = {
                     navController.navigate(Screen.Search.route)
                 },
+                onNavigationToChat = { selectedUserId ->
+                    navController.navigate(Screen.Chat.createRoute(selectedUserId)){
+                        popUpTo(Screen.Search.route){inclusive = true}
+                    }
+                },
             )
         }
 
@@ -80,16 +85,4 @@ fun AppNavHost(
 
     }
 
-}
-
-class UserModelNavType : NavType<UserModel>(isNullableAllowed = false) {
-    override fun get(bundle: Bundle, key: String): UserModel? {
-        return bundle.getParcelable(key)
-    }
-    override fun put(bundle: Bundle, key: String, value: UserModel) {
-        bundle.putParcelable(key, value)
-    }
-    override fun parseValue(value: String): UserModel {
-        throw UnsupportedOperationException("Parcelable can't be parsed from String!")
-    }
 }

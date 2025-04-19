@@ -49,10 +49,10 @@ class AuthRepositoryImpl : AuthRepository {
         emit(AuthState.Loading)
         try {
             Firebase.firestore.collection("users")
-                .document(user.uId)
+                .document(user.uid)
                 .set(user)
                 .await()
-            emit(AuthState.Success(user.uId))
+            emit(AuthState.Success(user.uid))
         } catch (e : Exception) {
             emit(AuthState.Error(e.message ?: "Failed to create user in Firestore"))
         }
