@@ -10,7 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import androidx.lifecycle.viewModelScope
 import com.example.quickchat.data.models.MessageModel
 import com.example.quickchat.ui.screens.AuthenticationScreen.models.AuthState
+import com.example.quickchat.ui.screens.ChatScreen.models.AllMessageLoadState
 import com.example.quickchat.ui.screens.ChatScreen.models.ChatUserState
+import com.example.quickchat.ui.utlis.errorLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,18 +22,25 @@ class ChatViewModel(
 ) : ViewModel() {
 
     private val _chat = MutableStateFlow<ChatUserState?>(ChatUserState.Loading)
-    var chatModel : StateFlow<ChatUserState?> = _chat.asStateFlow()
+    var chatModel: StateFlow<ChatUserState?> = _chat.asStateFlow()
 
-    var chatData : ChatModel? = null
+    private val _lstMessageWithCurrent =
+        MutableStateFlow<AllMessageLoadState>(AllMessageLoadState.Loading)
+    var lstMessageWithCurrent: StateFlow<AllMessageLoadState> = _lstMessageWithCurrent.asStateFlow()
 
-    fun loadOrCreateChat(selectedUserId : String){
+    var chatData: ChatModel? = null
+
+    fun loadOrCreateChat(selectedUserId: String) {
         viewModelScope.launch {
             Log.e("TAG", "viewmode >>>>>>>>>>>>>>> launch")
             val chat = chatRepository.getOrCreateChat(selectedUserId)
-            chat.collect{ it ->
-                when(it){
+            chat.collect { it ->
+                when (it) {
                     is ChatUserState.Error -> {}
-                    ChatUserState.Loading -> {_chat.value = it}
+                    ChatUserState.Loading -> {
+                        _chat.value = it
+                    }
+
                     is ChatUserState.SUCCESS -> {
                         chatData = it.chatModelId
                         _chat.value = it
@@ -42,7 +51,7 @@ class ChatViewModel(
         }
     }
 
-    fun sendMessage(message : String){
+    fun sendMessage(message: String) {
 
         viewModelScope.launch(Dispatchers.IO) {
             val messageModel = MessageModel(
@@ -50,6 +59,16 @@ class ChatViewModel(
                 message = message
             )
             chatRepository.sendMessage(chatData?.chatId ?: "", messageModel)
+        }
+    }
+
+
+    fun getAllMessagesWithCurrentUser(chatId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            chatRepository.getAllChatWithCurrentUser(chatId).collect {
+                errorLog("view model message >>>>>>>>>>>>> $it")
+                _lstMessageWithCurrent.value = it
+            }
         }
     }
 

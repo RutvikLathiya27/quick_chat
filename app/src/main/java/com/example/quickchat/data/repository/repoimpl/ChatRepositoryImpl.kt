@@ -6,12 +6,14 @@ import com.example.quickchat.data.models.ChatedUserModel
 import com.example.quickchat.data.models.MessageModel
 import com.example.quickchat.data.models.UserModel
 import com.example.quickchat.data.repository.repo.ChatRepository
+import com.example.quickchat.ui.screens.ChatScreen.models.AllMessageLoadState
 import com.example.quickchat.ui.screens.ChatScreen.models.ChatUserState
 import com.example.quickchat.ui.screens.ChatScreen.models.ChatedUserState
 import com.example.quickchat.ui.utlis.COLLECTION_CHATS
 import com.example.quickchat.ui.utlis.COLLECTION_MESSAGES
 import com.example.quickchat.ui.utlis.COLLECTION_USERS
 import com.example.quickchat.ui.utlis.INNER_COLLECTION_CHAT
+import com.example.quickchat.ui.utlis.errorLog
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -124,6 +126,30 @@ class ChatRepositoryImpl(
             emit(ChatedUserState.Error(e.message ?: "Fail"))
         }
     }
+
+    override suspend fun getAllChatWithCurrentUser(chatId: String): Flow<AllMessageLoadState> =
+        flow {
+            emit(AllMessageLoadState.Loading)
+            errorLog("Message load ")
+            try {
+                val lstMessages : ArrayList<MessageModel?> = arrayListOf()
+                val messageSnapShot = firestore.collection(COLLECTION_MESSAGES)
+                    .document(chatId)
+                    .collection(INNER_COLLECTION_CHAT)
+                    .get()
+                    .await()
+
+                val lstMessagesDocuments = messageSnapShot.documents.mapNotNull { doc ->
+                    val message = doc.toObject(MessageModel::class.java)
+                    lstMessages.add(message)
+                }
+                emit(AllMessageLoadState.SUCCESS(lstMessages))
+                errorLog("Message succ ")
+            } catch (e: Exception) {
+                errorLog("Message fail ")
+                emit(AllMessageLoadState.Error(e.message ?: "Fail to Load Chat"))
+            }
+        }
 
 
 }

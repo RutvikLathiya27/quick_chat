@@ -55,9 +55,7 @@ fun AppNavHost(
                     navController.navigate(Screen.Search.route)
                 },
                 onNavigationToChat = { selectedUserId ->
-                    navController.navigate(Screen.Chat.createRoute(selectedUserId)){
-                        popUpTo(Screen.Search.route){inclusive = true}
-                    }
+                    navController.navigate(Screen.Chat.createRoute(selectedUserId))
                 },
             )
         }

@@ -37,6 +37,7 @@ import com.example.quickchat.ui.theme.colorPrimary
 import com.example.quickchat.ui.theme.colorWhite
 import com.example.quickchat.ui.utlis.commonCompose.CircularImageFromUrl
 import com.example.quickchat.ui.utlis.convertLongIntoTime
+import com.example.quickchat.ui.utlis.errorLog
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -130,11 +131,10 @@ fun UserItem(user: ChatedUserModel, onNavigationToChat: (String) -> Unit) {
     Row(modifier = Modifier
         .fillMaxWidth()
         .clickable {
+            errorLog("Navigate >>>>>>>>>>>>>>>>>> ")
             onNavigationToChat(user.chatId)
         }
-        .padding(horizontal = 12.dp, vertical = 10.dp)
-        .clickable {
-        }) {
+        .padding(horizontal = 12.dp, vertical = 10.dp)) {
         CircularImageFromUrl(user.user.profile, 45.dp)
         Column(
             modifier = Modifier
