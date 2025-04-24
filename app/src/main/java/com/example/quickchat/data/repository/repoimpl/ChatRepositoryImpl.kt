@@ -15,7 +15,9 @@ import com.example.quickchat.ui.utlis.COLLECTION_USERS
 import com.example.quickchat.ui.utlis.INNER_COLLECTION_CHAT
 import com.example.quickchat.ui.utlis.errorLog
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
@@ -29,6 +31,7 @@ class ChatRepositoryImpl(
         emit(ChatUserState.Loading)
 
         val lstSortedIds = listOf(userId, otherUserId).sorted()
+        errorLog("CREate >>>> $otherUserId")
         val chatId = "${lstSortedIds[0]}_${lstSortedIds[1]}"
         val docRef = firestore.collection(COLLECTION_CHATS).document(chatId)
         val snapshot = docRef.get().await()
@@ -53,18 +56,20 @@ class ChatRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun sendMessage(chatId: String, messageModel: MessageModel) {
-        val lstUserIds = chatId.split("_")
-        val senderId = lstUserIds.toMutableList()
-        senderId.remove(userId)
+    override suspend fun sendMessage(senderId: String, messageModel: MessageModel) {
+//        val lstUserIds = chatId.split("_")
+//        val senderId = lstUserIds.toMutableList()
+//        senderId.remove(userId)
+        val lstSortedIds = listOf(userId, senderId).sorted()
+
         val message = messageModel.copy(
             senderId = userId,
-            receiverId = senderId[0],
+            receiverId = senderId,
             timestamp = System.currentTimeMillis()
         )
 
         val messageDocRef = firestore.collection(COLLECTION_MESSAGES)
-            .document(chatId)
+            .document("${lstSortedIds[0]}_${lstSortedIds[1]}")
             .collection(INNER_COLLECTION_CHAT)
             .document()
 
@@ -72,7 +77,7 @@ class ChatRepositoryImpl(
             .await()
 
         firestore.collection(COLLECTION_CHATS)
-            .document(chatId)
+            .document("${lstSortedIds[0]}_${lstSortedIds[1]}")
             .update("lastMessage", messageDocRef.id)
             .await()
 
@@ -82,12 +87,14 @@ class ChatRepositoryImpl(
         emit(ChatedUserState.Loading)
         try {
             val chatSnapShots = firestore.collection(COLLECTION_CHATS)
-                .whereArrayContains("users", userId) // get chats involving current user
+                .whereArrayContains("users", userId)
                 .get()
                 .await()
 
             val chatWithUsers = chatSnapShots.documents.mapNotNull { doc ->
                 val chat = doc.toObject(ChatModel::class.java)
+
+                errorLog("CHAT1 > $chat")
 
                 chat?.let {
 
@@ -132,10 +139,11 @@ class ChatRepositoryImpl(
             emit(AllMessageLoadState.Loading)
             errorLog("Message load ")
             try {
-                val lstMessages : ArrayList<MessageModel?> = arrayListOf()
+                val lstMessages: ArrayList<MessageModel?> = arrayListOf()
                 val messageSnapShot = firestore.collection(COLLECTION_MESSAGES)
                     .document(chatId)
                     .collection(INNER_COLLECTION_CHAT)
+                    .orderBy("timestamp")
                     .get()
                     .await()
 
@@ -150,6 +158,28 @@ class ChatRepositoryImpl(
                 emit(AllMessageLoadState.Error(e.message ?: "Fail to Load Chat"))
             }
         }
+
+    override suspend fun listenForNewMessages(
+        chatId: String,
+        lastTimeStamp: Long
+    ): Flow<List<MessageModel>> = callbackFlow {
+        val listener = firestore.collection(COLLECTION_MESSAGES)
+            .document(chatId)
+            .collection(INNER_COLLECTION_CHAT)
+            .whereGreaterThan("timestamp", lastTimeStamp)
+            .orderBy("timestamp")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val newMessages = snapshot?.documents?.mapNotNull {
+                    it.toObject(MessageModel::class.java)
+                } ?: emptyList()
+                trySend(newMessages)
+            }
+        awaitClose { listener.remove() }
+    }
 
 
 }

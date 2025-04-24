@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.firestore
 import org.koin.dsl.module
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.scope.get
 
 
 val networkModule = module {
@@ -32,8 +33,8 @@ val networkModule = module {
     viewModel { AuthViewModel(get()) }
     viewModel { SplashViewModel(get()) }
     viewModel { SearchScreenViewModel(get()) }
-    viewModel { ChatViewModel(get()) }
-    viewModel { UserChatHistoryViewModel(get()) }
+    viewModel { ChatViewModel(get(), get(), get()) }
+    viewModel { UserChatHistoryViewModel(get(), get()) }
 
 
 

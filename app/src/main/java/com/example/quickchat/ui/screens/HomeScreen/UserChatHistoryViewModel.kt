@@ -13,12 +13,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class UserChatHistoryViewModel(
-    private val chatRepository: ChatRepository
+    private val chatRepository: ChatRepository,
+    private val userId : String
 ) : ViewModel() {
+
+    val currentUserId : String = userId
 
     private val _userChatHistory = MutableStateFlow<ChatedUserState>(ChatedUserState.Loading)
     var userChatHistory : StateFlow<ChatedUserState?> = _userChatHistory.asStateFlow()
 
+    init {
+        getAllPastChatUser()
+    }
 
     fun getAllPastChatUser() {
         viewModelScope.launch {

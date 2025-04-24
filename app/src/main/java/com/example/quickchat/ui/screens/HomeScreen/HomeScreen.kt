@@ -21,8 +21,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -83,18 +83,17 @@ fun ChatedUser(
     paddingValue: PaddingValues,
     onNavigationToChat: (String) -> Unit
 ) {
-    val chatUserState = userChatHistoryViewModel.userChatHistory.collectAsState()
+    val chatUserState by userChatHistoryViewModel.userChatHistory.collectAsState()
     val lstUser = mutableListOf<ChatedUserModel>()
 
-    LaunchedEffect(Unit) {
-        userChatHistoryViewModel.getAllPastChatUser()
-    }
-    when (chatUserState.value) {
+    errorLog("CHAT >>>>>>>>>> $chatUserState, $lstUser")
+
+    when (chatUserState) {
         is ChatedUserState.Error -> {}
         ChatedUserState.Loading -> {}
         is ChatedUserState.SUCCESS -> {
-            (chatUserState.value as ChatedUserState.SUCCESS).lstUsersChat.let { lstUser.addAll(it) }
-            ChatedUserList(lstUser, onNavigationToChat)
+            (chatUserState as ChatedUserState.SUCCESS).lstUsersChat.let { lstUser.addAll(it) }
+            ChatedUserList(userChatHistoryViewModel.currentUserId, lstUser, onNavigationToChat)
         }
 
         null -> {}
@@ -103,6 +102,7 @@ fun ChatedUser(
 
 @Composable
 fun ChatedUserList(
+    currentUser: String,
     lstUser: MutableList<ChatedUserModel> = mutableListOf<ChatedUserModel>(),
     onNavigationToChat: (String) -> Unit
 ) {
@@ -111,7 +111,7 @@ fun ChatedUserList(
             .fillMaxSize()
     ) {
         items(lstUser.size) { itemCount ->
-            UserItem(lstUser[itemCount], onNavigationToChat)
+            UserItem(currentUser, lstUser[itemCount], onNavigationToChat)
             if (itemCount != lstUser.size - 1) {
                 Box(
                     modifier = Modifier
@@ -127,12 +127,12 @@ fun ChatedUserList(
 }
 
 @Composable
-fun UserItem(user: ChatedUserModel, onNavigationToChat: (String) -> Unit) {
+fun UserItem(currentUser: String, user: ChatedUserModel, onNavigationToChat: (String) -> Unit) {
     Row(modifier = Modifier
         .fillMaxWidth()
         .clickable {
             errorLog("Navigate >>>>>>>>>>>>>>>>>> ")
-            onNavigationToChat(user.chatId)
+            onNavigationToChat(if (currentUser == user.lastChat.receiverId) user.lastChat.senderId else user.lastChat.receiverId)
         }
         .padding(horizontal = 12.dp, vertical = 10.dp)) {
         CircularImageFromUrl(user.user.profile, 45.dp)
@@ -163,6 +163,7 @@ fun UserItem(user: ChatedUserModel, onNavigationToChat: (String) -> Unit) {
             Text(
                 text = user.lastChat.message,
                 fontSize = 16.sp,
+                maxLines = 1,
                 style = TextStyle(
                     color = colorWhite.copy(alpha = 0.7f),
                 ),

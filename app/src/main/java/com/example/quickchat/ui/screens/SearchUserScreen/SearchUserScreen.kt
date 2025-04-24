@@ -160,6 +160,7 @@ fun searchField(modifier: Modifier = Modifier, viewModel: SearchScreenViewModel)
             placeholder = {
                 Text(text = "Search friends")
             },
+
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,

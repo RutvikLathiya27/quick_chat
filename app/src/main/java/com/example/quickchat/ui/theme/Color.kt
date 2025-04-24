@@ -1,6 +1,7 @@
 package com.example.quickchat.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
@@ -18,4 +19,6 @@ val colorGreenShade2 = Color(0xFF90C67C)
 val colorGreenShade3 = Color(0xFFE1EEBC)
 val colorWhite = Color(0xFFFFFFFF)
 
-val colorLightGray = Color(0xFF202020)  // Balanced light gray
+val colorLightGray = Color(0xFF202020)
+val colorTransparent = Color(0x00FFFFFF)
+

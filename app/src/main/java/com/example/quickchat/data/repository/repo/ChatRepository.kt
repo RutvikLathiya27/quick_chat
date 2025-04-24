@@ -12,4 +12,5 @@ interface ChatRepository {
     suspend fun sendMessage(chatId: String, messageModel: MessageModel)
     suspend fun getUsersChattedWithCurrentUser(): Flow<ChatedUserState>
     suspend fun getAllChatWithCurrentUser(chatId: String): Flow<AllMessageLoadState>
+    suspend fun listenForNewMessages(chatId :String, lastTimeStamp :Long) : Flow<List<MessageModel>>
 }

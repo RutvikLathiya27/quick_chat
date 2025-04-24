@@ -7,6 +7,7 @@ import com.example.quickchat.data.models.UserModel
 import com.example.quickchat.data.paging.SearchUserPagingSource
 import com.example.quickchat.data.repository.repo.UserRepository
 import com.example.quickchat.ui.screens.SearchUserScreen.models.SearchUserState
+import com.example.quickchat.ui.utlis.COLLECTION_USERS
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,6 +15,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 
 class UserRepositoryImpl(
     private val userId: String,
@@ -45,5 +47,20 @@ class UserRepositoryImpl(
         } catch (e: Exception) {
             emit(SearchUserState.SearchFail(e.message ?: "Something went wrong"))
         }
+    }
+
+    override suspend fun getReceiverUSer(receiverId: String): Flow<UserModel?> = flow {
+        val snapshot = firestore.collection(COLLECTION_USERS)
+            .document(
+                receiverId
+            ).get()
+            .await()
+
+        if(snapshot.exists()){
+            emit(snapshot.toObject(UserModel::class.java))
+        }else{
+            emit(null)
+        }
+
     }
 }

@@ -10,6 +10,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
     fun fetchAllUser() : Flow<PagingData<UserModel>>
-
     suspend fun getSearchUser(query : String) : Flow<SearchUserState>
+    suspend fun getReceiverUSer(receiverId : String) : Flow<UserModel?>
 }
