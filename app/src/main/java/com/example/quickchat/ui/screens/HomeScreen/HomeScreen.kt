@@ -7,32 +7,49 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.quickchat.data.models.ChatedUserModel
 import com.example.quickchat.ui.screens.ChatScreen.models.ChatedUserState
+import com.example.quickchat.ui.theme.colorGreenShade1
 import com.example.quickchat.ui.theme.colorGreenShade2
 import com.example.quickchat.ui.theme.colorGreenShade3
+import com.example.quickchat.ui.theme.colorLightGray
 import com.example.quickchat.ui.theme.colorPrimary
 import com.example.quickchat.ui.theme.colorWhite
 import com.example.quickchat.ui.utlis.commonCompose.CircularImageFromUrl
@@ -44,7 +61,8 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     userChatHistoryViewModel: UserChatHistoryViewModel = koinViewModel(),
     onNavigationToSearch: () -> Unit,
-    onNavigationToChat: (String) -> Unit
+    onNavigationToChat: (String) -> Unit,
+    onNavigationToSetting : () -> Unit
 ) {
 
     Scaffold(
@@ -71,10 +89,103 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(paddingValue)
         ) {
+            HomeHeader(onNavigationToSetting)
+            SearchField()
             ChatedUser(userChatHistoryViewModel, paddingValue, onNavigationToChat)
         }
     }
 
+}
+
+@Composable
+fun SearchField() {
+    var searchText by remember { mutableStateOf("") }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = colorGreenShade1.copy(alpha = 0.4f)
+            )
+            .padding(horizontal = 10.dp, vertical = 5.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = colorLightGray,
+                    shape = RoundedCornerShape(percent = 50)
+                )
+                .padding(horizontal = 10.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            TextField(
+                value = searchText,
+                onValueChange = {
+                    searchText = it
+                },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = {
+                    Text(text = "Search friends")
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    cursorColor = colorPrimary
+                ),
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = colorWhite,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .fillMaxHeight(1f)
+                            .background(
+                                color = colorGreenShade2,
+                                shape = CircleShape
+                            )
+                            .padding(10.dp)
+                    )
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(
+                    onSearch = { }
+                )
+
+            )
+        }
+    }
+}
+
+@Composable
+fun HomeHeader(onNavigationToSetting: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = colorGreenShade1.copy(alpha = 0.4f))
+            .padding(horizontal = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Quick Chat",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium,
+            color = colorWhite,
+        )
+        Spacer(
+            modifier = Modifier.weight(1f)
+        )
+        IconButton(onClick = {
+            onNavigationToSetting()
+        }) {
+            Icon(Icons.Default.Settings, contentDescription = "setting", tint = colorWhite)
+        }
+    }
 }
 
 @Composable

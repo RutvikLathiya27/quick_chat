@@ -13,6 +13,7 @@ import com.example.quickchat.ui.screens.AuthenticationScreen.AuthenticationScree
 import com.example.quickchat.ui.screens.ChatScreen.ChatScreen
 import com.example.quickchat.ui.screens.HomeScreen.HomeScreen
 import com.example.quickchat.ui.screens.SearchUserScreen.SearchUserScreen
+import com.example.quickchat.ui.screens.SettingScreen.SettingScreen
 import com.example.quickchat.ui.screens.SplashScreen.SplashScreen
 
 @Composable
@@ -57,6 +58,9 @@ fun AppNavHost(
                 onNavigationToChat = { selectedUserId ->
                     navController.navigate(Screen.Chat.createRoute(selectedUserId))
                 },
+                onNavigationToSetting = {
+                    navController.navigate(Screen.Setting.route)
+                },
             )
         }
 
@@ -78,6 +82,12 @@ fun AppNavHost(
 
             ChatScreen(
                 user = userId,
+            )
+        }
+
+        composable(Screen.Setting.route){
+            SettingScreen(
+
             )
         }
 
