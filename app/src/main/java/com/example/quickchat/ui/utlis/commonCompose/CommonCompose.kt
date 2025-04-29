@@ -10,6 +10,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import com.example.quickchat.R
 
 @Composable

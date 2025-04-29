@@ -95,4 +95,5 @@ dependencies {
 
     implementation(libs.coil.compose.v260)
 
+
 }

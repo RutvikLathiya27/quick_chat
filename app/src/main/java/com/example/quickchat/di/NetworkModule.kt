@@ -10,6 +10,7 @@ import com.example.quickchat.ui.screens.AuthenticationScreen.AuthViewModel
 import com.example.quickchat.ui.screens.ChatScreen.ChatViewModel
 import com.example.quickchat.ui.screens.HomeScreen.UserChatHistoryViewModel
 import com.example.quickchat.ui.screens.SearchUserScreen.SearchScreenViewModel
+import com.example.quickchat.ui.screens.SettingScreen.UserInfoViewModel
 import com.example.quickchat.ui.screens.SplashScreen.SplashViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -35,7 +36,6 @@ val networkModule = module {
     viewModel { SearchScreenViewModel(get()) }
     viewModel { ChatViewModel(get(), get(), get()) }
     viewModel { UserChatHistoryViewModel(get(), get()) }
-
-
+    viewModel { UserInfoViewModel(get(), get()) }
 
 }
